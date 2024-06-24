@@ -1,12 +1,14 @@
+-- selene: allow(mixed_table)
 return {
-	"nvim-treesitter/nvim-treesitter",
-	build = ":TSUpdate",
-	config = function()
-		local config = require("nvim-treesitter.configs")
-		config.setup({
-			ensure_installed = { "lua", "javascript", "typescript", "go" },
-			highlight = { enable = true },
-			indent = { enable = true },
-		})
-	end,
+  {
+    'nvim-treesitter/nvim-treesitter',
+    build = ':TSUpdate',
+    event = 'VeryLazy',
+    config = require('setup.treesitter').setup,
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter-textobjects',     -- adds treesitter based text objects
+      { 'nvim-treesitter/playground', enabled = false }, -- TS PLayground for creating queries
+    },
+  },                                                     -- enhancements in highlighting and virtual text
 }
+

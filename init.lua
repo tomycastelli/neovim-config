@@ -1,24 +1,23 @@
-vim.cmd("set expandtab")
-vim.cmd("set tabstop=2")
-vim.cmd("set softtabstop=2")
-vim.cmd("set shiftwidth=2")
-vim.g.mapleader = " "
-
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
-	vim.fn.system({
-		"git",
-		"clone",
-		"--filter=blob:none",
-		"https://github.com/folke/lazy.nvim.git",
-		"--branch=stable",
-		lazypath,
-	})
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable",
+    lazypath,
+  })
 end
 vim.opt.rtp:prepend(lazypath)
 
-require("vim-options")
-require("keymaps")
-require("lazy").setup("plugins")
+require('settings.general')
+require("settings.gui")
+require("lazy").setup("plugins", {
+  checker = {
+    enabled = true,
+    frequency = 7200
+  },
+})
+require('setup.autocommand').setup()
 
-vim.cmd.colorscheme("tokyonight-night")

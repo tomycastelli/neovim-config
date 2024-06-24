@@ -21,4 +21,4 @@ vim.opt.path:append({ "**" })
 vim.opt.wildignore:append({ "*/node_modules/*" })
 vim.opt.splitbelow = true
 vim.opt.splitkeep = "cursor"
-vim.api.nvim_set_option("clipboard", "unnamed")
+vim.opt.clipboard = "unnamedplus"
