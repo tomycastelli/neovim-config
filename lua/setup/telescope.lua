@@ -7,11 +7,12 @@ return {
         prompt_prefix = ' ',
         selection_caret = '󰞘 ',
         color_devicons = true,
-        layout_strategy = "horizontal",
         layout_config = {
-          prompt_position = "bottom",
-          preview_width = 0.6,
-          preview_cutoff = 120
+          vertical = {
+            prompt_position = "bottom",
+            preview_width = 0.6,
+            preview_cutoff = 120
+          },
         },
         path_display = {
           shorten = {

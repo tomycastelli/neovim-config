@@ -2,8 +2,17 @@ local no_remap_opt = { noremap = true }
 local silent_opt = { silent = true }
 local no_remap_silent_opt = { noremap = true, silent = true }
 local no_remap_silent_expr_opt = { noremap = true, silent = true, expr = true }
+local harpoon = require("harpoon")
 
 local keymap_table = {
+  {
+    shortcut = '<S-tab>',
+    cmd = ':bnext<CR>',
+    opts = no_remap_opt,
+    description = 'Next buffer',
+    enabled = true,
+    modes = { 'n', 'x', 'o' }
+  },
   {
     shortcut = 's',
     cmd = function()
@@ -129,16 +138,6 @@ local keymap_table = {
     enabled = not vim.g.vscode,
   },
   {
-    shortcut = '<M-w>',
-    cmd = function()
-      require('auto-session.session-lens').search_session()
-    end,
-    opts = no_remap_silent_opt,
-    modes = { 'n' },
-    description = 'Open saved session',
-    enabled = not vim.g.vscode,
-  },
-  {
     shortcut = '<M-t>',
     cmd = ':Trouble diagnostics toggle focus=true<CR>',
     opts = no_remap_silent_opt,
@@ -248,7 +247,14 @@ local keymap_table = {
     description = 'Close current buffer',
     enabled = not vim.g.vscode,
   },
-
+  {
+    shortcut = '<leader>q',
+    cmd = ':lua MiniBufremove.delete()<CR>',
+    opts = no_remap_silent_opt,
+    modes = { 'n' },
+    description = 'Close current buffer',
+    enabled = not vim.g.vscode,
+  },
   {
     shortcut = '<C-g>',
     cmd = ':nohlsearch<CR>',
@@ -670,6 +676,49 @@ return {
     },
     normal = {
       maps = {
+        -- Todo: Add harpoon maps
+        h = {
+          name = "Harpoon",
+          h = { function()
+            harpoon.ui:toggle_quick_menu(harpoon:list())
+          end, 'Toggle quick menu' },
+          a = {
+            function()
+              harpoon:list():add()
+            end, 'Add to list'
+          },
+          j = {
+            function() harpoon:list():next() end, 'Next file'
+          },
+          k = {
+            function() harpoon:list():prev() end, 'Prev file'
+          },
+          ["1"] = {
+            function()
+              harpoon:list():select(1)
+            end, 'Go to 1'
+          },
+          ["2"] = {
+            function()
+              harpoon:list():select(2)
+            end, 'Go to 2'
+          },
+          ["3"] = {
+            function()
+              harpoon:list():select(3)
+            end, 'Go to 3'
+          },
+          ["4"] = {
+            function()
+              harpoon:list():select(4)
+            end, 'Go to 4'
+          },
+          ["5"] = {
+            function()
+              harpoon:list():select(5)
+            end, 'Go to 5'
+          },
+        },
         f = {
           name = 'File',
           b = { '<cmd>lua require("telescope.builtin").buffers()<CR>', 'Buffers' },
@@ -678,7 +727,8 @@ return {
           o = { '<cmd>lua require("telescope.builtin").oldfiles()<CR>', 'Prev Open Files' },
           c = { function()
             require("telescope.builtin").find_files({ cwd = vim.fn.stdpath("config") })
-          end, 'Neovim config files' }
+          end, 'Neovim config files' },
+          s = { require("auto-session.session-lens").search_session, "Sessions" },
         },
         v = {
           name = 'Vim',
@@ -726,7 +776,7 @@ return {
           h = { ':DiffviewFileHistory<CR>', 'Diff View File History' },
         },
         e = { ':NvimTreeToggle<CR>', 'File explorer' },
-        h = {
+        z = {
           name = 'Gitsigns',
           s = { ':Gitsigns stage_hunk<CR>', 'Stage hunk' },
           S = { ':Gitsigns stage_buffer<CR>', 'Stage buffer' },
@@ -745,7 +795,9 @@ return {
         l = {
           name = 'LSP',
           a = { '<cmd>lua vim.lsp.buf.code_action()<CR>', 'Code Actions' },
-          b = { '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', 'Show line diagnostics' },
+          b = { function()
+            vim.diagnostic.open_float({ focusable = false })
+          end, 'Show line diagnostics' },
           c = {
             function()
               vim.b.autoformat = not vim.b.autoformat
@@ -790,6 +842,7 @@ return {
           },
           m = { '<cmd>lua require("telescope.builtin").resume()<CR>', 'Resume Last Picker' },
           r = { '<cmd>lua require("telescope.builtin").pickers()<CR>', 'Previous Pickers' },
+          n = { ':Noice telescope<CR>', 'Noice history' },
         },
         d = {
           name = 'Debug',

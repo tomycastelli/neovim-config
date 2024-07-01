@@ -35,19 +35,6 @@ return {
     local augroup = function(name)
       return vim.api.nvim_create_augroup(name, { clear = false })
     end
-    if client.server_capabilities.code_lens or client.server_capabilities.codeLensProvider then
-      local group = augroup('LSPRefreshLens')
-
-      -- Code Lens
-      autocmd({ 'BufEnter', 'InsertLeave' }, {
-        desc = 'Auto show code lenses',
-        buffer = bufnr,
-        callback = function()
-          vim.lsp.codelens.refresh({ bufnr = bufnr })
-        end,
-        group = group,
-      })
-    end
     if client.server_capabilities.document_highlight or client.server_capabilities.documentHighlightProvider then
       local group = augroup('LSPHighlightSymbols')
 

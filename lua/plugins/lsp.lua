@@ -69,4 +69,3 @@ return {
     },
   }, -- utility to make neovim config better
 }
-

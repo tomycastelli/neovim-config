@@ -1,5 +1,17 @@
 return {
   setup = function()
+    require('notify').setup({
+      fps = 60,
+      render = 'wrapped-compact',
+      stages = 'slide',
+      timeout = 3000,
+      max_height = function()
+        return math.floor(vim.o.lines * 0.75)
+      end,
+      max_width = function()
+        return math.floor(vim.o.columns * 0.30)
+      end,
+    })
     require('noice').setup({
       presets = {
         bottom_search = true,         -- use a classic bottom cmdline for search
@@ -67,6 +79,20 @@ return {
           filter = {
             event = 'msg_show',
             find = 'written',
+          },
+          opts = { skip = true },
+        },
+        {
+          filter = {
+            event = 'msg_show',
+            find = 'more lines',
+          },
+          opts = { skip = true },
+        },
+        {
+          filter = {
+            event = 'msg_show',
+            find = 'yanked',
           },
           opts = { skip = true },
         },

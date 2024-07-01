@@ -9,31 +9,31 @@ vim.o.timeoutlen = 500
 vim.o.shell = '/opt/homebrew/bin/zsh'
 -- secure modelines
 vim.g.secure_modelines_allowed_items = {
-    'textwidth',
-    'tw',
-    'softtabstop',
-    'sts',
-    'tabstop',
-    'ts',
-    'shiftwidth',
-    'sw',
-    'expandtab',
-    'et',
-    'noexpandtab',
-    'noet',
-    'filetype',
-    'ft',
-    'foldmethod',
-    'fdm',
-    'readonly',
-    'ro',
-    'noreadonly',
-    'noro',
-    'rightleft',
-    'rl',
-    'norightleft',
-    'norl',
-    'colorcolumn',
+  'textwidth',
+  'tw',
+  'softtabstop',
+  'sts',
+  'tabstop',
+  'ts',
+  'shiftwidth',
+  'sw',
+  'expandtab',
+  'et',
+  'noexpandtab',
+  'noet',
+  'filetype',
+  'ft',
+  'foldmethod',
+  'fdm',
+  'readonly',
+  'ro',
+  'noreadonly',
+  'noro',
+  'rightleft',
+  'rl',
+  'norightleft',
+  'norl',
+  'colorcolumn',
 }
 
 -- replace grep with rgsettings
@@ -153,7 +153,8 @@ vim.o.list = true
 vim.o.splitkeep = 'topline'
 
 -- sync system clipboard
--- vim.o.clipboard = 'unnamedplus'
+vim.o.clipboard = 'unnamedplus'
 
 -- enable autoformat when saving. it is set for each buffer when lsp is attached
 vim.g.autoformat = true
+

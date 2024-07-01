@@ -8,11 +8,6 @@ M.on_attach = function(client, bufnr)
   require('setup.autocommand').lsp_autocmds(client, bufnr)
   -- check if this is applicable (for rust for example it is not)
   -- https://github.com/L3MON4D3/LuaSnip/wiki/Misc#improve-language-server-snippets
-
-  -- enable inlay hints if server supports it
-  if client.server_capabilities.inlayHintProvider then
-    vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
-  end
 end
 M.capabilities = function()
   local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -68,6 +63,12 @@ M.config_defaults = function()
     on_attach = M.on_attach,
     capabilities = M.capabilities(),
   })
+
+  -- tailwind
+  lspconfig.tailwindcss.setup({
+    on_attach = M.on_attach,
+    capabilities = M.capabilities(),
+  })
 end
 M.setup = function()
   local lspconfig = require('lspconfig')
@@ -81,10 +82,9 @@ M.setup = function()
       'markdownlint',
       'shfmt',
       'stylua',
-      'codespell',
-      'vale',
       'selene',
       'pylint',
+      'tailwincss',
       'write-good',
     },
   })
