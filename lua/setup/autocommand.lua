@@ -77,14 +77,6 @@ return {
     end
 
     local packer_group = augroup('LazyDone')
-    autocmd('User', {
-      group = packer_group,
-      pattern = 'LazyUpdate',
-      callback = function() -- Autocompile colorscheme
-        require('catppuccin').compile()
-      end,
-    })
-
     autocmd({ 'ModeChanged' }, {
       desc = 'Stop snippets when you leave to normal mode',
       pattern = '*',
@@ -110,14 +102,6 @@ return {
       pattern = '*',
       callback = function()
         require('vim.highlight').on_yank({ higroup = 'IncSearch', timeout = 1000 })
-      end,
-    })
-
-    autocmd({ 'OptionSet' }, {
-      desc = ' Automatically switch theme to dark/light when background set',
-      pattern = 'background',
-      callback = function()
-        vim.cmd('Catppuccin ' .. (vim.v.option_new == 'light' and 'latte' or 'mocha'))
       end,
     })
   end,

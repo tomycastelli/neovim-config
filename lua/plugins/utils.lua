@@ -1,6 +1,5 @@
 -- selene: allow(mixed_table)
 return {
-  { 'rmagatti/auto-session', enabled = not vim.g.vscode },
   {
     'bennypowers/nvim-regexplainer',
     enabled = not vim.g.vscode,
@@ -22,6 +21,12 @@ return {
     config = require('setup.toggleterm').setup,
   }, -- better terminal
   {
+    'stevearc/oil.nvim',
+    event = 'VeryLazy',
+    enabled = not vim.g.vscode,
+    config = require('setup.oil').setup,
+  }, -- file browser. eventually should replace neo-tree
+  {
     'nvim-telescope/telescope.nvim',
     event = 'VeryLazy',
     enabled = not vim.g.vscode,
@@ -35,19 +40,12 @@ return {
     },
     config = require('setup.telescope').setup,
   },
-  -- session management and picker
-  {
-    'rmagatti/auto-session',
-    enabled = not vim.g.vscode,
-    dependencies = { 'nvim-telescope/telescope.nvim' },
-    config = require('setup.session').setup,
-  },
   {
     "ThePrimeagen/harpoon",
     branch = "harpoon2",
     dependencies = { "nvim-lua/plenary.nvim" },
-    config = function ()
-    require('harpoon').setup()
+    config = function()
+      require('harpoon').setup()
     end
   }
 }

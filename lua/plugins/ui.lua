@@ -7,10 +7,9 @@ return {
     event = 'UIEnter',
     enabled = not vim.g.vscode,
     config = function()
-      local cmd_color = require('setup.catppuccin').pallete('mocha').teal
       require('setup.lualine').setup(
         require('setup.nvim-navic').winbar,
-        require('setup.noice').command_status(cmd_color)
+        require('setup.noice').command_status()
       )
     end,
   }, -- status line
@@ -27,20 +26,18 @@ return {
     end,
   }, -- adds various ui enhancements such as a popup for the cmd line, lsp progress
   {
-    'catppuccin/nvim',
-    enabled = not vim.g.vscode,
-    priority = 99,
+    'sainnhe/gruvbox-material',
+    lazy = false,
+    priority = 1000,
     config = function()
-      require('setup.catppuccin').setup('mocha')
-    end,
-  }, -- theme
-  {
-    "ellisonleao/gruvbox.nvim",
-    priority = 99,
-    config = function()
-      vim.cmd('colorscheme gruvbox')
-    end,
-    opts = ...
+      -- Optionally configure and load the colorscheme
+      -- directly inside the plugin declaration.
+      vim.g.gruvbox_material_enable_italic = true
+      vim.g.gruvbox_material_background = "hard"
+      vim.g.gruvbox_material_foreground = "material"
+      vim.g.gruvbox_material_better_performance = 1
+      vim.cmd.colorscheme('gruvbox-material')
+    end
   },
   {
     'nanozuki/tabby.nvim',

@@ -8,10 +8,9 @@ return {
         selection_caret = '󰞘 ',
         color_devicons = true,
         layout_config = {
+          preview_cutoff = 120,
           vertical = {
             prompt_position = "bottom",
-            preview_width = 0.6,
-            preview_cutoff = 120
           },
         },
         path_display = {
@@ -63,7 +62,6 @@ return {
     require('telescope').load_extension('fzf')
     require('telescope').load_extension('lsp_handlers')
     require('telescope').load_extension('dap')
-    require('telescope').load_extension('session-lens')
     require('telescope').load_extension('file_browser')
     require('telescope').load_extension('refactoring')
   end,

@@ -43,8 +43,6 @@ vim.go.grepformat = '%f:%l:%c:%m'
 -- Don't confirm .lvimrc
 vim.g.localvimrc_ask = 0
 
--- size of cmd bar
-vim.go.cmdheight = 2
 -- You will have bad experience for diagnostic messages when it's default 4000.
 vim.go.updatetime = 100
 

@@ -11,4 +11,3 @@ return {
     },
   },                                                     -- enhancements in highlighting and virtual text
 }
-

@@ -102,14 +102,6 @@ local keymap_table = {
     enabled = true,
   },
   {
-    shortcut = '<C-a>',
-    cmd = 'gg<S-v>G',
-    opts = {},
-    modes = { 'n' },
-    description = 'Select all',
-    enabled = true,
-  },
-  {
     shortcut = '<M-p>',
     cmd = function()
       require('telescope.builtin').buffers()
@@ -253,6 +245,14 @@ local keymap_table = {
     opts = no_remap_silent_opt,
     modes = { 'n' },
     description = 'Close current buffer',
+    enabled = not vim.g.vscode,
+  },
+  {
+    shortcut = '<leader>e',
+    cmd = '<CMD>Oil<CR>',
+    description = 'File explorer',
+    opts = no_remap_silent_opt,
+    modes = { 'n' },
     enabled = not vim.g.vscode,
   },
   {
@@ -635,278 +635,234 @@ local keymap_table = {
 return {
   keymap_table = keymap_table,
   which_key = {
-    visual = {
-      maps = {
-        ['c'] = { '"*y', 'Copy selection to system clipboard' },
-        l = {
-          name = 'LSP',
-          a = { '<cmd>lua vim.lsp.buf.range_code_action()<CR>', 'Range Code Action' },
-        },
-        h = {
-          name = 'Gitsigns',
-          s = {
-            function()
-              require('gitsigns').stage_hunk({ vim.fn.line('.'), vim.fn.line('v') })
-            end,
-            'Stage Hunk',
-          },
-          r = {
-            function()
-              require('gitsigns').reset_hunk({ vim.fn.line('.'), vim.fn.line('v') })
-            end,
-            'Reset Hunk',
-          },
-        },
-        n = {
-          name = 'Refactoring',
-          e = { ':Refactor extract', 'Extract' },
-          f = { ':Refactor extract_to_file ', 'Extract to file' },
-          i = { ':Refactor inline_var', 'Inline Variable' },
-          v = { ':Refactor extract_var ', 'Extract Variable' },
-          r = { '<cmd>lua require("telescope").extensions.refactoring.refactors()<CR>', 'Refactors' },
-          p = { '<cmd>lua require("refactoring").debug.print_var()<CR>', 'Print Variable' },
-        },
+    {
+      mode = { "v" },
+      { "<leader>c", '"*y',              desc = "Copy selection to system clipboard", remap = false },
+      { "<leader>h", group = "Gitsigns", remap = false },
+      {
+        "<leader>hr",
+        function()
+          require('gitsigns').reset_hunk({ vim.fn.line('.'), vim.fn.line('v') })
+        end,
+        desc = "Reset Hunk",
+        remap = false
       },
-      opts = {
-        prefix = '<leader>',
-        noremap = true,
-        silent = true,
-        mode = 'v',
+      {
+        "<leader>hs",
+        function()
+          require('gitsigns').stage_hunk({ vim.fn.line('.'), vim.fn.line('v') })
+        end,
+        desc = "Stage Hunk",
+        remap = false
       },
+      { "<leader>l",  group = "LSP",                                                          remap = false },
+      { "<leader>la", "<cmd>lua vim.lsp.buf.range_code_action()<CR>",                         desc = "Range Code Action", remap = false },
+      { "<leader>n",  group = "Refactoring",                                                  remap = false },
+      { "<leader>ne", ":Refactor extract",                                                    desc = "Extract",           remap = false },
+      { "<leader>nf", ":Refactor extract_to_file ",                                           desc = "Extract to file",   remap = false },
+      { "<leader>ni", ":Refactor inline_var",                                                 desc = "Inline Variable",   remap = false },
+      { "<leader>np", '<cmd>lua require("refactoring").debug.print_var()<CR>',                desc = "Print Variable",    remap = false },
+      { "<leader>nr", '<cmd>lua require("telescope").extensions.refactoring.refactors()<CR>', desc = "Refactors",         remap = false },
+      { "<leader>nv", ":Refactor extract_var ",                                               desc = "Extract Variable",  remap = false },
     },
-    normal = {
-      maps = {
-        -- Todo: Add harpoon maps
-        h = {
-          name = "Harpoon",
-          h = { function()
-            harpoon.ui:toggle_quick_menu(harpoon:list())
-          end, 'Toggle quick menu' },
-          a = {
-            function()
-              harpoon:list():add()
-            end, 'Add to list'
-          },
-          j = {
-            function() harpoon:list():next() end, 'Next file'
-          },
-          k = {
-            function() harpoon:list():prev() end, 'Prev file'
-          },
-          ["1"] = {
-            function()
-              harpoon:list():select(1)
-            end, 'Go to 1'
-          },
-          ["2"] = {
-            function()
-              harpoon:list():select(2)
-            end, 'Go to 2'
-          },
-          ["3"] = {
-            function()
-              harpoon:list():select(3)
-            end, 'Go to 3'
-          },
-          ["4"] = {
-            function()
-              harpoon:list():select(4)
-            end, 'Go to 4'
-          },
-          ["5"] = {
-            function()
-              harpoon:list():select(5)
-            end, 'Go to 5'
-          },
-        },
-        f = {
-          name = 'File',
-          b = { '<cmd>lua require("telescope.builtin").buffers()<CR>', 'Buffers' },
-          f = { '<cmd>lua require("telescope.builtin").find_files()<CR>', 'Files' },
-          w = { '<cmd>lua require("telescope").extensions.file_browser.file_browser()<CR>', 'File Browser' },
-          o = { '<cmd>lua require("telescope.builtin").oldfiles()<CR>', 'Prev Open Files' },
-          c = { function()
-            require("telescope.builtin").find_files({ cwd = vim.fn.stdpath("config") })
-          end, 'Neovim config files' },
-          s = { require("auto-session.session-lens").search_session, "Sessions" },
-        },
-        v = {
-          name = 'Vim',
-          q = { '<cmd>lua require("telescope.builtin").quickfix()<CR>', 'Quickfix List' },
-          l = { '<cmd>lua require("telescope.builtin").loclist()<CR>', 'Location List' },
-          j = { '<cmd>lua require("telescope.builtin").jumplist()<CR>', 'Jump List' },
-          c = { '<cmd>lua require("telescope.builtin").commands()<CR>', 'Commands' },
-          h = { '<cmd>lua require("telescope.builtin").command_history()<CR>', 'Command History' },
-          s = { '<cmd>lua require("telescope.builtin").search_history()<CR>', 'Search History' },
-          m = { '<cmd>lua require("telescope.builtin").man_pages()<CR>', 'Man Pages' },
-          k = { '<cmd>lua require("telescope.builtin").marks()<CR>', 'Marks' },
-          o = { '<cmd>lua require("telescope.builtin").colorscheme()<CR>', 'Colorscheme' },
-          r = { '<cmd>lua require("telescope.builtin").registers()<CR>', 'Registers' },
-          a = { '<cmd>lua require("telescope.builtin").autocommands()<CR>', 'Autocommands' },
-          p = { '<cmd>lua require("telescope.builtin").vim_options()<CR>', 'Vim Options' },
-          e = { '<cmd>lua require("telescope.builtin").spell_suggest()<CR>', 'Spell Suggestions' },
-          y = { '<cmd>lua require("telescope.builtin").keymaps()<CR>', 'Normal Mode Keymaps' },
-        },
-        p = {
-          name = 'Grep',
-          g = { '<cmd>lua require("telescope.builtin").grep_string()<CR>', 'Grep String' },
-          l = { '<cmd>lua require("telescope.builtin").live_grep()<CR>', 'Live Grep' },
-          r = {
-            '<cmd>lua require("telescope").extensions.live_grep_args.live_grep_args()<CR>',
-            'Live Grep Raw',
-          },
-          s = { ':Spectre<CR>', 'Spectre' },
-          w = {
-            '<cmd>lua require("spectre").open_visual({select_word = true})<CR>',
-            'Spectre Current Word',
-          },
-        },
-        g = {
-          name = 'Git',
-          f = { '<cmd>lua require("telescope.builtin").git_files()<CR>', 'Files' },
-          s = { '<cmd>lua require("telescope.builtin").git_status()<CR>', 'Status' },
-          c = { '<cmd>lua require("telescope.builtin").git_commits()<CR>', 'Commit Log' },
-          l = { '<cmd>lua require("telescope.builtin").git_bcommits()<CR>', 'Commit Log Current Buffer' },
-          b = { '<cmd>lua require("telescope.builtin").git_branches()<CR>', 'Branches' },
-          t = { '<cmd>lua require("telescope.builtin").git_stash()<CR>', 'Stash' },
-          d = { ':DiffviewOpen<CR>', 'Open Diff View' },
-          x = { ':DiffviewClose<CR>', 'Close Diff View' },
-          r = { ':DiffviewRefresh<CR>', 'Diff View Refresh' },
-          e = { ':DiffviewFocusFiles<CR>', 'Diff View Focus Files' },
-          h = { ':DiffviewFileHistory<CR>', 'Diff View File History' },
-        },
-        e = { ':NvimTreeToggle<CR>', 'File explorer' },
-        z = {
-          name = 'Gitsigns',
-          s = { ':Gitsigns stage_hunk<CR>', 'Stage hunk' },
-          S = { ':Gitsigns stage_buffer<CR>', 'Stage buffer' },
-          u = { ':Gitsigns undo_stage_hunk<CR>', 'Undo stage hunk' },
-          r = { ':Gitsigns reset_hunk<CR>', 'Reset hunk' },
-          R = { ':Gitsigns reset_buffer<CR>', 'Reset buffer' },
-          p = { ':Gitsigns preview_hunk<CR>', 'Preview hunk' },
-          b = { ':Gitsigns toggle_current_line_blame<CR>', 'Toggle blame current line' },
-          B = {
-            '<cmd>lua require("gitsigns").blame_line({full=true, ignore_whitespace = true})<CR>',
-            'Blame line',
-          },
-          d = { ':Gitsigns diffthis<CR>', 'Diff this' },
-          t = { ':Gitsigns toggle_deleted<CR>', 'Toggle deleted hunks' },
-        },
-        l = {
-          name = 'LSP',
-          a = { '<cmd>lua vim.lsp.buf.code_action()<CR>', 'Code Actions' },
-          b = { function()
-            vim.diagnostic.open_float({ focusable = false })
-          end, 'Show line diagnostics' },
-          c = {
-            function()
-              vim.b.autoformat = not vim.b.autoformat
-            end,
-            'Toggle autoformat',
-          },
-          d = { '<cmd>lua require("telescope.builtin").lsp_definitions()<CR>', 'Definitions' },
-          e = { '<cmd>lua require("telescope.builtin").treesitter()<CR>', 'Treesitter' },
-          f = { '<cmd>lua vim.lsp.buf.format({ async = false })<CR>', 'Format' },
-          g = {
-            '<cmd>lua require("telescope.builtin").lsp_document_diagnostics()<CR>',
-            'Document Diagnostics',
-          },
-          i = { '<cmd>lua require("telescope.builtin").lsp_implementations()<CR>', 'Implementations' },
-          l = { '<cmd>lua vim.lsp.codelens.run()<CR>', 'Code Lens' },
-          m = { '<cmd>lua vim.lsp.buf.rename()<CR>', 'Rename symbol' },
-          o = {
-            '<cmd>lua require("telescope.builtin").diagnostics()<CR>',
-            'Workspace Diagnostics',
-          },
-          q = { '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', 'Diagnostic set loclist' },
-          r = { '<cmd>lua require("telescope.builtin").lsp_references()<CR>', 'References' },
-          s = { '<cmd>lua require("telescope.builtin").lsp_document_symbols()<CR>', 'Document Symbols' },
-          t = { '<cmd>lua require("telescope.builtin").lsp_type_definitions()<CR>', 'Type Definitions' },
-          v = {
-            '<cmd>lua require("telescope.builtin").lsp_dynamic_workspace_symbols()<CR>',
-            'Dynamic Workspace Symbols',
-          },
-          w = {
-            '<cmd>lua require("telescope.builtin").lsp_workspace_symbols()<CR>',
-            'Workspace Symbols',
-          },
-        },
-        t = {
-          name = 'Telescope',
-          s = { '<cmd>lua require("telescope.builtin").planets()<CR>', 'Use Telescope...' },
-          c = { '<cmd>lua require("telescope.builtin").builtin()<CR>', 'Builtin Pickers' },
-          h = { '<cmd>lua require("telescope.builtin").reloader()<CR>', 'Reload Lua Modules' },
-          y = {
-            '<cmd>lua require("telescope.builtin").symbols({"emoji", "kaomoji", "gitmoji", "julia", "math", "nerd"})<CR>',
-            'List Symbols',
-          },
-          m = { '<cmd>lua require("telescope.builtin").resume()<CR>', 'Resume Last Picker' },
-          r = { '<cmd>lua require("telescope.builtin").pickers()<CR>', 'Previous Pickers' },
-          n = { ':Noice telescope<CR>', 'Noice history' },
-        },
-        d = {
-          name = 'Debug',
-          c = { '<cmd>lua require("telescope").extensions.dap.commands()<CR>', 'Commands' },
-          f = { '<cmd>lua require("telescope").extensions.dap.configurations()<CR>', 'Configurations' },
-          b = { '<cmd>lua require("telescope").extensions.dap.list_breakpoints()<CR>', 'Breakpoints' },
-          v = { '<cmd>lua require("telescope").extensions.dap.variables()<CR>', 'Variables' },
-          r = { '<cmd>lua require("telescope").extensions.dap.frames()<CR>', 'Frames' },
-        },
-        r = {
-          name = 'Rust',
-          r = { ':RustLsp runnables<CR>', 'Runnables' },
-          d = { ':RustLsp debuggables<CR>', 'Debuggables' },
-          e = { ':RustLsp explainError<CR>', 'Explain Error' },
-          c = { ':RustLsp openCargo<CR>', 'Open Cargo.toml' },
-          g = { ':RustLsp crateGraph<CR>', 'View Crate Graph' },
-          m = { ':RustLsp expandMacro<CR>', 'Expand Macro' },
-          p = { ':RustLsp parentModule<CR>', 'Parent Module' },
-          j = { ':RustLsp joinLines<CR>', 'Join Lines' },
-          a = { ':RustLsp hover actions<CR>', 'Hover Actions' },
-          h = { ':RustLsp hover range<CR>', 'Range Hover Actions' },
-          b = { ':RustLsp moveItem down<CR>', 'Move Item Down' },
-          u = { ':RustLsp moveItem up<CR>', 'Move Item Up' },
-          s = { ':RustLsp syntaxTree<CR>', 'View Syntax Tree' },
-          t = { '<cmd>require("setup.toggleterm").run_float("cargo test")<CR>', 'Run tests' },
-        },
-        s = {
-          name = 'Shell',
-          a = { ':ToggleTermOpenAll<CR>', 'Open All' },
-          c = { ':ToggleTermCloseAll<CR>', 'Open All' },
-          h = { ':ToggleTerm direction=horizontal<CR>', 'Horizontal' },
-          v = { ':ToggleTerm direction=vertical<CR>', 'Vertical' },
-          f = { ':ToggleTerm direction=float<CR>', 'Float' },
-        },
-        o = {
-          name = 'Overseer',
-          s = { ':OverseerSaveBundle<CR>', 'Save' },
-          l = { ':OverseerLoadBundle<CR>', 'Load' },
-          d = { ':OverseerDeleteBundle<CR>', 'Delete' },
-          c = { ':OverseerRunCmd<CR>', 'Run shell command' },
-          r = { ':OverseerRun<CR>', 'Run task' },
-          b = { ':OverseerBuild<CR>', 'Open task builder' },
-          q = { ':OverseerQuickAction<CR>', 'Run action on a task' },
-          a = { ':OverseerTaskAction<CR>', 'Select a task to run an action on' },
-        },
-        n = {
-          name = 'Refactoring',
-          i = { ':Refactor inline_var', 'Inline Variable' },
-          I = { ':Refactor inline_func', 'Inline Function' },
-          b = { ':Refactor extract_block', 'Extract Block' },
-          f = { ':Refactor extract_block_to_file', 'Extract Block to File' },
-          r = { '<cmd>lua require("telescope").extensions.refactoring.refactors()<CR>', 'Refactors' },
-          p = { '<cmd>lua require("refactoring").debug.printf()<CR>', 'Printf' },
-          v = { '<cmd>lua require("refactoring").debug.print_var()<CR>', 'Print Variable' },
-          c = { '<cmd>lua require("refactoring").debug.cleanup({})<CR>', 'Cleanup' },
-        },
+    {
+      mode = { "n" },
+      { "<leader>d",  group = "Debug",                                                       remap = false },
+      { "<leader>db", '<cmd>lua require("telescope").extensions.dap.list_breakpoints()<CR>', desc = "Breakpoints",    remap = false },
+      { "<leader>dc", '<cmd>lua require("telescope").extensions.dap.commands()<CR>',         desc = "Commands",       remap = false },
+      { "<leader>df", '<cmd>lua require("telescope").extensions.dap.configurations()<CR>',   desc = "Configurations", remap = false },
+      { "<leader>dr", '<cmd>lua require("telescope").extensions.dap.frames()<CR>',           desc = "Frames",         remap = false },
+      { "<leader>dv", '<cmd>lua require("telescope").extensions.dap.variables()<CR>',        desc = "Variables",      remap = false },
+      { "<leader>f",  group = "File",                                                        remap = false },
+      { "<leader>fb", '<cmd>lua require("telescope.builtin").buffers()<CR>',                 desc = "Buffers",        remap = false },
+      {
+        "<leader>fc",
+        function()
+          require("telescope.builtin").find_files({ cwd = vim.fn.stdpath("config") })
+        end,
+        desc = "Neovim config files",
+        remap = false
       },
-      opts = {
-        prefix = '<leader>',
-        noremap = true,
-        silent = true,
-        mode = 'n',
+      { "<leader>ff", '<cmd>lua require("telescope.builtin").find_files()<CR>',                   desc = "Files",                     remap = false },
+      { "<leader>fo", '<cmd>lua require("telescope.builtin").oldfiles()<CR>',                     desc = "Prev Open Files",           remap = false },
+      { "<leader>fr", '<cmd>lua require("telescope.builtin").registers()<CR>',                    desc = "Registers",                 remap = false },
+      { "<leader>fw", '<cmd>lua require("telescope").extensions.file_browser.file_browser()<CR>', desc = "File Browser",              remap = false },
+      { "<leader>g",  group = "Git",                                                              remap = false },
+      { "<leader>gb", '<cmd>lua require("telescope.builtin").git_branches()<CR>',                 desc = "Branches",                  remap = false },
+      { "<leader>gc", '<cmd>lua require("telescope.builtin").git_commits()<CR>',                  desc = "Commit Log",                remap = false },
+      { "<leader>gd", ":DiffviewOpen<CR>",                                                        desc = "Open Diff View",            remap = false },
+      { "<leader>ge", ":DiffviewFocusFiles<CR>",                                                  desc = "Diff View Focus Files",     remap = false },
+      { "<leader>gf", '<cmd>lua require("telescope.builtin").git_files()<CR>',                    desc = "Files",                     remap = false },
+      { "<leader>gh", ":DiffviewFileHistory<CR>",                                                 desc = "Diff View File History",    remap = false },
+      { "<leader>gl", '<cmd>lua require("telescope.builtin").git_bcommits()<CR>',                 desc = "Commit Log Current Buffer", remap = false },
+      { "<leader>gr", ":DiffviewRefresh<CR>",                                                     desc = "Diff View Refresh",         remap = false },
+      { "<leader>gs", '<cmd>lua require("telescope.builtin").git_status()<CR>',                   desc = "Status",                    remap = false },
+      { "<leader>gt", '<cmd>lua require("telescope.builtin").git_stash()<CR>',                    desc = "Stash",                     remap = false },
+      { "<leader>gx", ":DiffviewClose<CR>",                                                       desc = "Close Diff View",           remap = false },
+      { "<leader>h",  group = "Harpoon",                                                          remap = false },
+      {
+        "<leader>h1",
+        function()
+          harpoon:list():select(1)
+        end,
+        desc = "Go to 1",
+        remap = false
       },
-    },
+      {
+        "<leader>h2",
+        function()
+          harpoon:list():select(2)
+        end,
+        desc = "Go to 2",
+        remap = false
+      },
+      {
+        "<leader>h3",
+        function()
+          harpoon:list():select(3)
+        end,
+        desc = "Go to 3",
+        remap = false
+      },
+      {
+        "<leader>h4",
+        function()
+          harpoon:list():select(4)
+        end,
+        desc = "Go to 4",
+        remap = false
+      },
+      {
+        "<leader>h5",
+        function()
+          harpoon:list():select(5)
+        end,
+        desc = "Go to 5",
+        remap = false
+      },
+      {
+        "<leader>ha",
+        function()
+          harpoon:list():add()
+        end,
+        desc = "Add to list",
+        remap = false
+      },
+      { "<leader>hh", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, desc = "Toggle quick menu", remap = false },
+      { "<leader>hj", function() harpoon:list():next() end,                        desc = "Next file",         remap = false },
+      { "<leader>hk", function() harpoon:list():prev() end,                        desc = "Prev file",         remap = false },
+      { "<leader>l",  group = "LSP",                                               remap = false },
+      {
+        "<leader>la",
+        function()
+          require("fastaction").code_action()
+        end,
+        desc = "Code Actions",
+        remap = false
+      },
+      { "<leader>lb", function() vim.diagnostic.open_float({ focusable = false }) end,                                               desc = "Show line diagnostics",             remap = false },
+      {
+        "<leader>lc",
+        function()
+          vim.b.autoformat = not vim.b.autoformat
+        end,
+        desc = "Toggle autoformat",
+        remap = false
+      },
+      { "<leader>ld", '<cmd>lua require("telescope.builtin").lsp_definitions()<CR>',                                                 desc = "Definitions",                       remap = false },
+      { "<leader>le", '<cmd>lua require("telescope.builtin").treesitter()<CR>',                                                      desc = "Treesitter",                        remap = false },
+      { "<leader>lf", "<cmd>lua vim.lsp.buf.format({ async = false })<CR>",                                                          desc = "Format",                            remap = false },
+      { "<leader>lg", '<cmd>lua require("telescope.builtin").lsp_document_diagnostics()<CR>',                                        desc = "Document Diagnostics",              remap = false },
+      { "<leader>li", '<cmd>lua require("telescope.builtin").lsp_implementations()<CR>',                                             desc = "Implementations",                   remap = false },
+      { "<leader>ll", "<cmd>lua vim.lsp.codelens.run()<CR>",                                                                         desc = "Code Lens",                         remap = false },
+      { "<leader>lm", "<cmd>lua vim.lsp.buf.rename()<CR>",                                                                           desc = "Rename symbol",                     remap = false },
+      { "<leader>lo", '<cmd>lua require("telescope.builtin").diagnostics()<CR>',                                                     desc = "Workspace Diagnostics",             remap = false },
+      { "<leader>lq", "<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>",                                                               desc = "Diagnostic set loclist",            remap = false },
+      { "<leader>lr", '<cmd>lua require("telescope.builtin").lsp_references()<CR>',                                                  desc = "References",                        remap = false },
+      { "<leader>ls", '<cmd>lua require("telescope.builtin").lsp_document_symbols()<CR>',                                            desc = "Document Symbols",                  remap = false },
+      { "<leader>lt", '<cmd>lua require("telescope.builtin").lsp_type_definitions()<CR>',                                            desc = "Type Definitions",                  remap = false },
+      { "<leader>lv", '<cmd>lua require("telescope.builtin").lsp_dynamic_workspace_symbols()<CR>',                                   desc = "Dynamic Workspace Symbols",         remap = false },
+      { "<leader>lw", '<cmd>lua require("telescope.builtin").lsp_workspace_symbols()<CR>',                                           desc = "Workspace Symbols",                 remap = false },
+      { "<leader>n",  group = "Refactoring",                                                                                         remap = false },
+      { "<leader>nI", ":Refactor inline_func",                                                                                       desc = "Inline Function",                   remap = false },
+      { "<leader>nb", ":Refactor extract_block",                                                                                     desc = "Extract Block",                     remap = false },
+      { "<leader>nc", '<cmd>lua require("refactoring").debug.cleanup({})<CR>',                                                       desc = "Cleanup",                           remap = false },
+      { "<leader>nf", ":Refactor extract_block_to_file",                                                                             desc = "Extract Block to File",             remap = false },
+      { "<leader>ni", ":Refactor inline_var",                                                                                        desc = "Inline Variable",                   remap = false },
+      { "<leader>np", '<cmd>lua require("refactoring").debug.printf()<CR>',                                                          desc = "Printf",                            remap = false },
+      { "<leader>nr", '<cmd>lua require("telescope").extensions.refactoring.refactors()<CR>',                                        desc = "Refactors",                         remap = false },
+      { "<leader>nv", '<cmd>lua require("refactoring").debug.print_var()<CR>',                                                       desc = "Print Variable",                    remap = false },
+      { "<leader>o",  group = "Overseer",                                                                                            remap = false },
+      { "<leader>oa", ":OverseerTaskAction<CR>",                                                                                     desc = "Select a task to run an action on", remap = false },
+      { "<leader>ob", ":OverseerBuild<CR>",                                                                                          desc = "Open task builder",                 remap = false },
+      { "<leader>oc", ":OverseerRunCmd<CR>",                                                                                         desc = "Run shell command",                 remap = false },
+      { "<leader>od", ":OverseerDeleteBundle<CR>",                                                                                   desc = "Delete",                            remap = false },
+      { "<leader>ol", ":OverseerLoadBundle<CR>",                                                                                     desc = "Load",                              remap = false },
+      { "<leader>oq", ":OverseerQuickAction<CR>",                                                                                    desc = "Run action on a task",              remap = false },
+      { "<leader>or", ":OverseerRun<CR>",                                                                                            desc = "Run task",                          remap = false },
+      { "<leader>os", ":OverseerSaveBundle<CR>",                                                                                     desc = "Save",                              remap = false },
+      { "<leader>p",  group = "Grep",                                                                                                remap = false },
+      { "<leader>pg", '<cmd>lua require("telescope.builtin").grep_string()<CR>',                                                     desc = "Grep String",                       remap = false },
+      { "<leader>pl", '<cmd>lua require("telescope.builtin").live_grep()<CR>',                                                       desc = "Live Grep",                         remap = false },
+      { "<leader>pr", '<cmd>lua require("telescope").extensions.live_grep_args.live_grep_args()<CR>',                                desc = "Live Grep Raw",                     remap = false },
+      { "<leader>ps", ":Spectre<CR>",                                                                                                desc = "Spectre",                           remap = false },
+      { "<leader>pw", '<cmd>lua require("spectre").open_visual({select_word = true})<CR>',                                           desc = "Spectre Current Word",              remap = false },
+      { "<leader>r",  group = "Rust",                                                                                                remap = false },
+      { "<leader>ra", ":RustLsp hover actions<CR>",                                                                                  desc = "Hover Actions",                     remap = false },
+      { "<leader>rb", ":RustLsp moveItem down<CR>",                                                                                  desc = "Move Item Down",                    remap = false },
+      { "<leader>rc", ":RustLsp openCargo<CR>",                                                                                      desc = "Open Cargo.toml",                   remap = false },
+      { "<leader>rd", ":RustLsp debuggables<CR>",                                                                                    desc = "Debuggables",                       remap = false },
+      { "<leader>re", ":RustLsp explainError<CR>",                                                                                   desc = "Explain Error",                     remap = false },
+      { "<leader>rg", ":RustLsp crateGraph<CR>",                                                                                     desc = "View Crate Graph",                  remap = false },
+      { "<leader>rh", ":RustLsp hover range<CR>",                                                                                    desc = "Range Hover Actions",               remap = false },
+      { "<leader>rj", ":RustLsp joinLines<CR>",                                                                                      desc = "Join Lines",                        remap = false },
+      { "<leader>rm", ":RustLsp expandMacro<CR>",                                                                                    desc = "Expand Macro",                      remap = false },
+      { "<leader>rp", ":RustLsp parentModule<CR>",                                                                                   desc = "Parent Module",                     remap = false },
+      { "<leader>rr", ":RustLsp runnables<CR>",                                                                                      desc = "Runnables",                         remap = false },
+      { "<leader>rs", ":RustLsp syntaxTree<CR>",                                                                                     desc = "View Syntax Tree",                  remap = false },
+      { "<leader>rt", '<cmd>require("setup.toggleterm").run_float("cargo test")<CR>',                                                desc = "Run tests",                         remap = false },
+      { "<leader>ru", ":RustLsp moveItem up<CR>",                                                                                    desc = "Move Item Up",                      remap = false },
+      { "<leader>s",  group = "Shell",                                                                                               remap = false },
+      { "<leader>sa", ":ToggleTermOpenAll<CR>",                                                                                      desc = "Open All",                          remap = false },
+      { "<leader>sc", ":ToggleTermCloseAll<CR>",                                                                                     desc = "Open All",                          remap = false },
+      { "<leader>sf", ":ToggleTerm direction=float<CR>",                                                                             desc = "Float",                             remap = false },
+      { "<leader>sh", ":ToggleTerm direction=horizontal<CR>",                                                                        desc = "Horizontal",                        remap = false },
+      { "<leader>sv", ":ToggleTerm direction=vertical<CR>",                                                                          desc = "Vertical",                          remap = false },
+      { "<leader>t",  group = "Telescope",                                                                                           remap = false },
+      { "<leader>tc", '<cmd>lua require("telescope.builtin").builtin()<CR>',                                                         desc = "Builtin Pickers",                   remap = false },
+      { "<leader>th", '<cmd>lua require("telescope.builtin").reloader()<CR>',                                                        desc = "Reload Lua Modules",                remap = false },
+      { "<leader>tm", '<cmd>lua require("telescope.builtin").resume()<CR>',                                                          desc = "Resume Last Picker",                remap = false },
+      { "<leader>tn", ":Noice telescope<CR>",                                                                                        desc = "Noice history",                     remap = false },
+      { "<leader>tr", '<cmd>lua require("telescope.builtin").pickers()<CR>',                                                         desc = "Previous Pickers",                  remap = false },
+      { "<leader>ts", '<cmd>lua require("telescope.builtin").planets()<CR>',                                                         desc = "Use Telescope...",                  remap = false },
+      { "<leader>ty", '<cmd>lua require("telescope.builtin").symbols({"emoji", "kaomoji", "gitmoji", "julia", "math", "nerd"})<CR>', desc = "List Symbols",                      remap = false },
+      { "<leader>v",  group = "Vim",                                                                                                 remap = false },
+      { "<leader>va", '<cmd>lua require("telescope.builtin").autocommands()<CR>',                                                    desc = "Autocommands",                      remap = false },
+      { "<leader>vc", '<cmd>lua require("telescope.builtin").commands()<CR>',                                                        desc = "Commands",                          remap = false },
+      { "<leader>ve", '<cmd>lua require("telescope.builtin").spell_suggest()<CR>',                                                   desc = "Spell Suggestions",                 remap = false },
+      { "<leader>vh", '<cmd>lua require("telescope.builtin").command_history()<CR>',                                                 desc = "Command History",                   remap = false },
+      { "<leader>vj", '<cmd>lua require("telescope.builtin").jumplist()<CR>',                                                        desc = "Jump List",                         remap = false },
+      { "<leader>vk", '<cmd>lua require("telescope.builtin").marks()<CR>',                                                           desc = "Marks",                             remap = false },
+      { "<leader>vl", '<cmd>lua require("telescope.builtin").loclist()<CR>',                                                         desc = "Location List",                     remap = false },
+      { "<leader>vm", '<cmd>lua require("telescope.builtin").man_pages()<CR>',                                                       desc = "Man Pages",                         remap = false },
+      { "<leader>vo", '<cmd>lua require("telescope.builtin").colorscheme()<CR>',                                                     desc = "Colorscheme",                       remap = false },
+      { "<leader>vp", '<cmd>lua require("telescope.builtin").vim_options()<CR>',                                                     desc = "Vim Options",                       remap = false },
+      { "<leader>vq", '<cmd>lua require("telescope.builtin").quickfix()<CR>',                                                        desc = "Quickfix List",                     remap = false },
+      { "<leader>vr", '<cmd>lua require("telescope.builtin").registers()<CR>',                                                       desc = "Registers",                         remap = false },
+      { "<leader>vs", '<cmd>lua require("telescope.builtin").search_history()<CR>',                                                  desc = "Search History",                    remap = false },
+      { "<leader>vy", '<cmd>lua require("telescope.builtin").keymaps()<CR>',                                                         desc = "Normal Mode Keymaps",               remap = false },
+      { "<leader>z",  group = "Gitsigns",                                                                                            remap = false },
+      { "<leader>zB", '<cmd>lua require("gitsigns").blame_line({full=true, ignore_whitespace = true})<CR>',                          desc = "Blame line",                        remap = false },
+      { "<leader>zR", ":Gitsigns reset_buffer<CR>",                                                                                  desc = "Reset buffer",                      remap = false },
+      { "<leader>zS", ":Gitsigns stage_buffer<CR>",                                                                                  desc = "Stage buffer",                      remap = false },
+      { "<leader>zb", ":Gitsigns toggle_current_line_blame<CR>",                                                                     desc = "Toggle blame current line",         remap = false },
+      { "<leader>zd", ":Gitsigns diffthis<CR>",                                                                                      desc = "Diff this",                         remap = false },
+      { "<leader>zp", ":Gitsigns preview_hunk<CR>",                                                                                  desc = "Preview hunk",                      remap = false },
+      { "<leader>zr", ":Gitsigns reset_hunk<CR>",                                                                                    desc = "Reset hunk",                        remap = false },
+      { "<leader>zs", ":Gitsigns stage_hunk<CR>",                                                                                    desc = "Stage hunk",                        remap = false },
+      { "<leader>zt", ":Gitsigns toggle_deleted<CR>",                                                                                desc = "Toggle deleted hunks",              remap = false },
+      { "<leader>zu", ":Gitsigns undo_stage_hunk<CR>",                                                                               desc = "Undo stage hunk",                   remap = false },
+    }
   },
   map_keys = function()
     for _, keymap in pairs(keymap_table) do

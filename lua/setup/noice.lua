@@ -32,9 +32,10 @@ return {
       },
       cmdline = {
         enabled = true,
+        view = 'cmdline',
         format = {
-          search_down = { icon = ' ' },
-          search_up = { icon = ' ' },
+          search_down = { icon = ' ' },
+          search_up = { icon = ' ' },
         },
       },
       commands = {
@@ -95,15 +96,6 @@ return {
             find = 'yanked',
           },
           opts = { skip = true },
-        },
-      },
-      views = {
-        cmdline_popup = {
-          border = {
-            style = 'none',
-            padding = { 1, 2 },
-          },
-          filter_options = {},
         },
       },
     })
