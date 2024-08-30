@@ -69,6 +69,11 @@ M.config_defaults = function()
     on_attach = M.on_attach,
     capabilities = M.capabilities(),
   })
+
+  lspconfig.svelte.setup {
+    -- Add filetypes for the server to run and share info between files
+    filetypes = { 'typescript', 'javascript', 'svelte', 'html', 'css' },
+  }
 end
 M.setup = function()
   local lspconfig = require('lspconfig')
